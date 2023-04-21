@@ -1,0 +1,111 @@
+//Create a page with header, footer, body and left side navigation with 2 links Add and View.
+
+//2. "Add" link: Should display a page with 4-5 input fields (textbox, dropdown, checkbox etc.) with labels along with Submit button. Clicking the Submit button should save the data (You can use windows session Storage to save the data). User can enter any no. of records. Validations on these fields is nice to have feature.
+
+//3. "View link: Should display a table of all the records entered on 'Add' page.
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Recyc - Add and View</title>
+  </head>
+  <body>
+    <header>
+      <h1>Recyc</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="#">Add</a></li>
+        <li><a href="#">View</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <aside>
+        <h2>Navigation</h2>
+        <ul>
+          <li><a href="#">Add</a></li>
+          <li><a href="#">View</a></li>
+        </ul>
+      </aside>
+      <main>
+        <h2>Add Record</h2>
+        <form>
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required><br><br>
+          <label for="age">Age:</label>
+          <input type="number" id="age" name="age" min="0" max="150" required><br><br>
+          <label for="gender">Gender:</label>
+          <select id="gender" name="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select><br><br>
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required><br><br>
+          <label for="subscribe">Subscribe:</label>
+          <input type="checkbox" id="subscribe" name="subscribe"><br><br>
+          <input type="submit" value="Submit">
+        </form>
+      </main>
+    </div>
+    <footer>
+      <p>&copy; It can be using with the help of foopter tag.</p>
+    </footer>
+  </body>
+</html>
+
+<!-- JavaScript for storing data in session storage -->
+
+<script>
+  const form = document.querySelector('form');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const age = document.getElementById('age').value;
+    const gender = document.getElementById('gender').value;
+    const email = document.getElementById('email').value;
+    const subscribe = document.getElementById('subscribe').checked;
+    const record = {
+      name: name,
+      age: age,
+      gender: gender,
+      email: email,
+      subscribe: subscribe
+    };
+    let records = sessionStorage.getItem('records');
+    if (records) {
+      records = JSON.parse(records);
+      records.push(record);
+      sessionStorage.setItem('records', JSON.stringify(records));
+    } else {
+      sessionStorage.setItem('records', JSON.stringify([record]));
+    }
+    form.reset();
+    alert('Record added successfully!');
+  });
+</script>
+
+<!-- JavaScript for displaying data from session storage -->
+
+<script>
+  const table = document.createElement('table');
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th>Subscribe</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+  const tbody = table.querySelector('tbody');
+  const records = sessionStorage.getItem('records');
+  if (records) {
+    const parsedRecords = JSON.parse(records);
+    for (const record of parsedRecords) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${record.name}</td>
